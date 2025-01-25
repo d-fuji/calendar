@@ -2,7 +2,7 @@
 import FullCalendar from '@fullcalendar/react'
 import dayGridPlugin from '@fullcalendar/daygrid'
 import interactionPlugin, { DateClickArg } from '@fullcalendar/interaction'
-import { Container, Dialog, Paper } from '@mui/material';
+import { Container, Paper } from '@mui/material';
 import { useState } from 'react';
 
 // 参考: https://zenn.dev/sushizanmai/articles/6f25590061de2c
