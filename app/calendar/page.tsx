@@ -53,6 +53,11 @@ type CalendarProps = {
   onDateClick: (arg: DateClickArg) => void;
 }
 const Calendar: React.FC<CalendarProps> = (props) => {
+  // TODO: 「日」表記を消す
+  // TODO: フォーカルを当てる
+  // TODO: シフトを入力するとフォーカスしている日付のシフトを上書きする
+  // TODO: シフトボタンを押すと次の日にフォーカルを当てる
+  // TODO: 次の日が月跨ぎの場合は次の月に移動する
   return (
     <FullCalendar
       plugins={[dayGridPlugin, interactionPlugin]}
