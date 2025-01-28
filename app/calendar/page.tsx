@@ -2,8 +2,9 @@
 import FullCalendar from '@fullcalendar/react'
 import dayGridPlugin from '@fullcalendar/daygrid'
 import interactionPlugin, { DateClickArg } from '@fullcalendar/interaction'
-import { Container, Paper } from '@mui/material';
+import { Box, Button, Container, Paper } from '@mui/material';
 import { useState } from 'react';
+import styles from './page.module.css';
 
 // 参考: https://zenn.dev/sushizanmai/articles/6f25590061de2c
 export default function CalendarPage() {
@@ -23,15 +24,13 @@ export default function CalendarPage() {
     setEvents([...events, { title: shiftPatern, date: editDate }]);
   }
   return (
-    <Container>
-      <ShiftSelector
-        onSelectShift={handleSetShift}
-      />
+    <>
       <Calendar
         events={events}
         onDateClick={handleDateClick}
       />
-    </Container>
+      <ShiftSelector onSelectShift={handleSetShift} />
+    </>
   );
 }
 
@@ -39,11 +38,14 @@ type ShiftSelectorProps = {
   onSelectShift: (shiftPatern: string) => void;
 }
 const ShiftSelector: React.FC<ShiftSelectorProps> = (props) => {
+  // https://mui.com/material-ui/customization/palette/#custom-colors
   return (
-    <Paper>
-      <button onClick={() => props.onSelectShift('入り')}>入り</button>
-      <button onClick={() => props.onSelectShift('明け')}>明け</button>
-    </Paper>
+    <Box m={2} display="flex" flexWrap="wrap">
+      <Button color="primary" variant="outlined" sx={{ margin: '4px' }}>日勤</Button>
+      <Button color="secondary" variant="outlined" sx={{ margin: '4px' }}>夜勤</Button>
+      <Button color="error" variant="outlined" sx={{ margin: '4px' }}>明け</Button>
+      <Button color="warning" variant="outlined" sx={{ margin: '4px' }}>休み</Button>
+    </Box>
   );
 }
 
@@ -57,7 +59,21 @@ const Calendar: React.FC<CalendarProps> = (props) => {
       plugins={[dayGridPlugin, interactionPlugin]}
       initialView="dayGridMonth"
       events={props.events}
+      locale={'ja'}
+      buttonText={
+        {
+          today: '今日',
+          month: '月',
+          week: '週',
+          day: '日'
+        }
+      }
+      height={'auto'}
+      contentHeight={'auto'}
+      aspectRatio={2}
+      // editable
       dateClick={props.onDateClick}
+    // eventChange={(arg) => alert(arg.event)}
     />
   );
 }
@@ -65,4 +81,5 @@ const Calendar: React.FC<CalendarProps> = (props) => {
 type Event = {
   title: string;
   date: string;
+  color?: string;
 }
