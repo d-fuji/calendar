@@ -2,9 +2,8 @@
 import FullCalendar from '@fullcalendar/react'
 import dayGridPlugin from '@fullcalendar/daygrid'
 import interactionPlugin, { DateClickArg } from '@fullcalendar/interaction'
-import { Box, Button, Container, Paper } from '@mui/material';
+import { Box, Button } from '@mui/material';
 import { useState } from 'react';
-import styles from './page.module.css';
 
 // 参考: https://zenn.dev/sushizanmai/articles/6f25590061de2c
 export default function CalendarPage() {
@@ -37,7 +36,7 @@ export default function CalendarPage() {
 type ShiftSelectorProps = {
   onSelectShift: (shiftPatern: string) => void;
 }
-const ShiftSelector: React.FC<ShiftSelectorProps> = (props) => {
+const ShiftSelector: React.FC<ShiftSelectorProps> = () => {
   // https://mui.com/material-ui/customization/palette/#custom-colors
   return (
     <Box m={2} display="flex" flexWrap="wrap">
