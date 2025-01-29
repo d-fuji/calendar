@@ -7,17 +7,21 @@ import { useCallback, useState } from 'react';
 
 // 参考: https://zenn.dev/sushizanmai/articles/6f25590061de2c
 export default function CalendarPage() {
-  const initialEvents: Event[] = [
-    { title: 'event 1', date: '2025-01-24' },
-    { title: 'event 2', date: '2025-01-23' },
-  ]
   const initialEditDate = getISO8601Date(new Date());
-
-  const [events, setEvents] = useState<Event[]>(initialEvents);
   const [editDate, setEditDate] = useState<string>(initialEditDate);
+
+  const initialEvents: Event[] = []
+  const [events, setEvents] = useState<Event[]>(initialEvents);
+
+  const [decoration, setDecoration] = useState<Decoration>({
+    date: initialEditDate,
+    color: 'grey',
+    display: 'background',
+  });
 
   const handleClickDateCell = (arg: DateClickArg) => {
     setEditDate(arg.dateStr);
+    setDecoration({ date: arg.dateStr, color: 'grey', display: 'background' });
   }
   const handleClickShiftButton = useCallback((shiftPatern: string) => {
     const hasExistingEvent = () => {
@@ -33,12 +37,17 @@ export default function CalendarPage() {
     if (!hasExistingEvent()) {
       setEvents([...events, { title: shiftPatern, date: editDate }]);
     }
+    const date = new Date(editDate);
+    const nextDate = new Date(date.setDate(date.getDate() + 1));
+    setEditDate(getISO8601Date(nextDate));
+    setDecoration({ date: getISO8601Date(nextDate), color: 'grey', display: 'background' });
   }, [events, editDate, setEvents]);
 
   return (
     <>
       <Calendar
         events={events}
+        decoration={decoration}
         onDateClick={handleClickDateCell}
       />
       <ShiftSelector onSelectShift={handleClickShiftButton} />
@@ -62,32 +71,24 @@ const ShiftSelector: React.FC<ShiftSelectorProps> = (props) => {
 }
 
 type CalendarProps = {
-  events: Event[];
+  events: (Event | Decoration)[]
+  decoration: Decoration;
   onDateClick: (arg: DateClickArg) => void;
 }
 const Calendar: React.FC<CalendarProps> = (props) => {
-  // TODO: フォーカルを当てる
-  // TODO: シフトボタンを押すと次の日にフォーカルを当てる
   // TODO: 次の日が月跨ぎの場合は次の月に移動する
   return (
     <FullCalendar
       plugins={[dayGridPlugin, interactionPlugin]}
       initialView="dayGridMonth"
-      events={props.events}
+      // eventsとdecorationを結合して渡す
+      events={props.events.concat(props.decoration)}
       locale={'ja'}
       buttonText={{ today: '今日' }
       }
       height={'auto'}
-      contentHeight={'auto'}
-      aspectRatio={2}
-      // editable
       dateClick={props.onDateClick}
-      datesSet={(dateInfo) => {
-        console.log(dateInfo.start.toISOString())
-        console.log(dateInfo.end.toISOString())
-      }}
       dayCellContent={(arg) => arg.dayNumberText.replace(/日/, '')}
-    // eventChange={(arg) => alert(arg.event)}
     />
   );
 }
@@ -96,6 +97,12 @@ type Event = {
   title: string;
   date: string;
   color?: string;
+}
+
+type Decoration = {
+  date: string;
+  color: string;
+  display: string;
 }
 
 const getISO8601Date = (date: Date) => {
