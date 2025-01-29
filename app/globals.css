@@ -1,12 +1,11 @@
 html,
 body {
-  max-width: 180vw;
+  max-width: 100vw;
   overflow-x: hidden;
 } @media screen and (min-width: 1025px) { 
   /* iPad Proの横幅が1024px */
   body {
-    background-color: aqua;
-    color: #333;
+    max-width: 100vw;
   }
 }
 
